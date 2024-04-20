@@ -2,6 +2,7 @@
 using MEC;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using UnityEngine;
 
 namespace Framework.Network
@@ -16,19 +17,19 @@ namespace Framework.Network
     {
         public string ConnectionId { get; set; }
 
-        protected ServerSession session;
+        protected ClientSession session;
 
-        public ServerSession Session
+        public ClientSession Session
         {
             get => session;
-            set
+            private set
             {
                 session = value;
-                session.connectedHandler += _OnConnected;
                 session.disconnectedHandler += _OnDisconnected;
                 session.receivedHandler += _OnRecv;
             }
         }
+
         public PacketQueue PacketQueue { get; }
         public PacketHandler packetHandler { get; }
 
@@ -38,39 +39,17 @@ namespace Framework.Network
         public Action connectedHandler;
         public Action disconnectedHandler;
 
-        CoroutineHandle ping;
-        CoroutineHandle updateServerTime;
         CoroutineHandle packetUpdate;
-
-        private readonly Queue<long> pings;
-        public long pingAverage;
-
-        private long serverTime;
-        public long calcuatedServerTime;
-        private float deltaTime;
-        readonly System.Diagnostics.Stopwatch stopwatch;
 
         public Connection()
         {
             state = ConnectionState.Closed;
 
             packetHandler = new PacketHandler();
-            packetHandler.AddHandler(Handle_S_ENTER);
-            packetHandler.AddHandler(Handle_S_DISCONNECTED);
+            packetHandler.AddHandler(Handle_C_ENTER);
 
             PacketQueue = new();
-            pings = new();
-            pingAverage = 0;
 
-            serverTime = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
-            calcuatedServerTime = serverTime;
-            deltaTime = 0f;
-
-            stopwatch = new();
-
-            ping = Timing.RunCoroutine(Ping());
-            updateServerTime = Timing.RunCoroutine(UpdateServerTime());
-            //순서 중요, UpdateServerTime 이후에 PacketUpdate 실행
             packetUpdate = Timing.RunCoroutine(PacketUpdate());
         }
 
@@ -78,12 +57,18 @@ namespace Framework.Network
         {
             UnityEngine.Debug.Log("Connection Destructor");
 
-            packetHandler.RemoveHandler(Handle_S_ENTER);
-            packetHandler.RemoveHandler(Handle_S_DISCONNECTED);
+            packetHandler.RemoveHandler(Handle_C_ENTER);
 
             Timing.KillCoroutines(packetUpdate);
-            Timing.KillCoroutines(updateServerTime);
-            Timing.KillCoroutines(ping);
+        }
+
+        public void SetSession( Socket socket )
+        {
+            ClientSession session = new();
+            Session = session;
+            Session.Start(socket);
+
+            _OnConnected();
         }
 
         private void _OnConnected()
@@ -111,45 +96,14 @@ namespace Framework.Network
                 Session.Send(pkt);
         }
 
-        private void Handle_S_ENTER( Protocol.S_ENTER pkt )
+        private void Handle_C_ENTER( Protocol.C_ENTER pkt )
         {
-            if (pkt.Result == "SUCCESS")
-            {
-                Protocol.C_SERVERTIME servertime = new();
-                Send(PacketManager.MakeSendBuffer(servertime));
-            }
+            Debug.Log($"Handle_C_ENTER: {pkt.ClientId}");
         }
 
-        private void Handle_S_DISCONNECTED( Protocol.S_DISCONNECT pkt )
+        public void Handle_C_PING( Protocol.C_PING pkt )
         {
-            UnityEngine.Debug.Log("Handle S Disconnect : " + pkt.Code);
-
-            Close();
-        }
-
-        public void Handle_S_PING( Protocol.S_PING pkt )
-        {
-            pings.Enqueue((long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds - pkt.Tick);
-
-            if (pings.Count > 10)
-            {
-                _ = pings.Dequeue();
-            }
-
-            long sum = 0;
-            foreach (long item in pings)
-            {
-                sum += item;
-            }
-
-            pingAverage = sum / pings.Count;
-        }
-
-        public void Handle_S_SERVERTIME( Protocol.S_SERVERTIME pkt )
-        {
-            serverTime = pkt.Tick + (pingAverage / 2);
-
-            stopwatch.Start();
+            Debug.Log($"Handle_C_PING");
         }
 
         public void Close()
@@ -162,22 +116,6 @@ namespace Framework.Network
             state = ConnectionState.Closed;
 
             session?.RegisterDisconnect();
-        }
-
-        IEnumerator<float> Ping()
-        {
-            Protocol.C_PING ping = new();
-
-            while (true)
-            {
-                if (state == ConnectionState.Connected)
-                {
-                    ping.Tick = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
-                    Send(PacketManager.MakeSendBuffer(ping));
-                }
-
-                yield return Timing.WaitForSeconds(0.2f);
-            }
         }
 
         private IEnumerator<float> PacketUpdate()
@@ -196,30 +134,6 @@ namespace Framework.Network
 
                         handler?.Invoke(packet.Message);
                     }
-                }
-
-                yield return Timing.WaitForOneFrame;
-            }
-        }
-
-        private IEnumerator<float> UpdateServerTime()
-        {
-            while (true)
-            {
-                if (stopwatch.IsRunning)
-                {
-                    stopwatch.Stop();
-
-                    serverTime += stopwatch.ElapsedMilliseconds;
-                    calcuatedServerTime = serverTime;
-                    deltaTime = 0;
-
-                    stopwatch.Reset();
-                }
-                else
-                {
-                    deltaTime += Time.deltaTime;
-                    calcuatedServerTime = serverTime + (long)Math.Round(deltaTime * 1000, 1);
                 }
 
                 yield return Timing.WaitForOneFrame;

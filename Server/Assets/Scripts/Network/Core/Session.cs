@@ -6,6 +6,30 @@ using UnityEngine;
 
 namespace Framework.Network
 {
+    public class ClientSession : PacketSession
+    {
+        public Action connectedHandler;
+        public Action disconnectedHandler;
+        public Action<ArraySegment<byte>> receivedHandler;
+
+        public override void OnConnected()
+        {
+            connectedHandler?.Invoke();
+        }
+
+        public override void OnDisconnected()
+        {
+            disconnectedHandler?.Invoke();
+        }
+
+        public override void OnRecvPacket( ArraySegment<byte> buffer )
+        {
+            receivedHandler?.Invoke(buffer);
+        }
+
+        public override void OnSend( int numOfBytes ) { }
+    }
+
     public abstract class PacketSession : Session
     {
         public static readonly int HeaderSize = 2;
@@ -53,8 +77,8 @@ namespace Framework.Network
         private bool isSendRegistered = false;
         private bool isDisconnectRegistered = false;
 
-        public abstract void OnConnected( EndPoint endPoint );
-        public abstract void OnDisconnected( EndPoint endPoint );
+        public abstract void OnConnected();
+        public abstract void OnDisconnected();
         public abstract int OnRecv( ArraySegment<byte> buffer );
         public abstract void OnSend( int numOfBytes );
 
@@ -110,7 +134,7 @@ namespace Framework.Network
 
             try
             {
-                OnDisconnected(socket.RemoteEndPoint);
+                OnDisconnected();
             }
             catch (Exception e)
             {
