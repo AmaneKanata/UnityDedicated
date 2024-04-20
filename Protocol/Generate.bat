@@ -22,7 +22,7 @@ for %%f in (%PROTO_PATH%\*.proto) do (
 :: Run the Packet Generator
 echo Running Packet Generator...
 %GENERATOR% --proto_path "%PROTO_PATH%" --template_path "%TEMPLATE_PATH%" --output_path "%OUTPUT_PATH%\Server" --recv "C_" --send "S_"
-%GENERATOR% --proto_path "%PROTO_PATH%" --template_path "%TEMPLATE_PATH%" --output_path "%OUTPUT_PATH%\Client" --recv "C_" --send "S_"
+%GENERATOR% --proto_path "%PROTO_PATH%" --template_path "%TEMPLATE_PATH%" --output_path "%OUTPUT_PATH%\Client" --recv "S_" --send "C_"
 
 echo All tasks completed successfully.
 ENDLOCAL
