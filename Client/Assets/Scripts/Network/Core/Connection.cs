@@ -91,6 +91,10 @@ namespace Framework.Network
             state = ConnectionState.Connected;
 
             connectedHandler?.Invoke();
+
+            Protocol.C_ENTER enter = new();
+            enter.ClientId = "this is test";
+            Send(PacketManager.MakeSendBuffer(enter));
         }
 
         private void _OnDisconnected()

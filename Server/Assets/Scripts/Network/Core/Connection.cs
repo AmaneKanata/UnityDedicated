@@ -120,6 +120,8 @@ namespace Framework.Network
 
         private IEnumerator<float> PacketUpdate()
         {
+            yield return 0;
+
             while (true)
             {
                 if (state == ConnectionState.Connected || !PacketQueue.Empty())
