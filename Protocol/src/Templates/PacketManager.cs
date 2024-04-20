@@ -1,3 +1,4 @@
+using Framework.Network;
 using Google.Protobuf;
 using Protocol;
 using System;
@@ -47,6 +48,11 @@ namespace Framework.Network
             {
                 Protocol.S_PING ping = pkt as Protocol.S_PING;
                 connection.Handle_S_PING(ping);
+            }
+            if (id == (ushort)MsgId.PKT_C_PING)
+            {
+                Protocol.C_PING ping = pkt as Protocol.C_PING;
+                connection.Handle_C_PING(ping);
             }
             if (id == (ushort)MsgId.PKT_S_SERVERTIME)
             {
