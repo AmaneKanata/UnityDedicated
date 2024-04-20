@@ -1,0 +1,179 @@
+syntax = "proto3";
+package Protocol;
+
+import "Packet_001_GameObject.proto";
+
+message Quaternion
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+	float w = 4;
+}
+
+message S_FPS_INSTANTIATE
+{
+	string ownerId = 1;
+	int32 playerId = 2;
+	Vector3 position = 3;
+	Quaternion rotation = 4;
+	int32 hp = 5;
+}
+
+message C_FPS_POSITION
+{
+	int64 timestamp = 1;
+	Vector3 position = 2;
+	Vector3 velocity = 3;
+}
+
+message S_FPS_POSITION
+{
+	int32 playerId = 1;
+	int64 timestamp = 2;
+	Vector3 position = 3;
+	Vector3 velocity = 4;
+}
+
+message C_FPS_ROTATION
+{
+	Quaternion rotation = 1;
+}
+
+message S_FPS_ROTATION
+{
+	int32 playerId = 1;
+	Quaternion rotation = 2;
+}
+
+message C_FPS_SHOOT
+{
+	Vector3 position = 1;
+	Vector3 direction = 2;
+}
+
+message S_FPS_SHOOT
+{
+	int32 playerId= 1;
+}
+
+message S_FPS_ATTACKED
+{
+	int32 playerid = 1;
+	int32 damage = 2;
+	int32 hp = 3;
+}
+
+message C_FPS_CHANGE_WEAPON
+{
+	int32 weaponId = 1;
+	int64 timestamp = 2;
+}
+
+message S_FPS_CHANGE_WEAPON
+{
+	int32 playerId = 1;
+	int32 weaponId = 2;
+	int64 timestamp = 3;
+}
+
+message C_FPS_RELOAD
+{
+}
+
+message S_FPS_RELOAD
+{
+	int32 playerId = 1;
+}
+
+message FPSAnimation
+{
+	float moveX = 1;
+	float moveY = 2;
+	float velocity = 3;
+	bool moving = 4;
+	bool inAir = 5;
+	float sprinting = 6;
+	int32 poseState = 7;
+	int32 movementState = 8;
+
+	float lookX = 9;
+	float lookY = 10;
+
+	bool isTurning = 11;
+	bool turnRight = 12;
+
+	bool aiming = 13;
+}
+
+message C_FPS_ANIMATION
+{
+	FPSAnimation fpsAnimation = 1;
+}
+
+message S_FPS_ANIMATION
+{
+	int32 playerId = 1;
+	FPSAnimation fpsAnimation = 2;
+}
+
+//Game
+
+message C_FPS_READY
+{
+	bool isReady = 1;
+}
+
+message S_FPS_LOAD
+{
+}
+
+message C_FPS_LOAD_COMPLETE
+{
+}
+
+message C_FPS_START
+{
+}
+
+message S_FPS_START
+{
+}
+
+message S_FPS_FINISH
+{
+}
+
+message S_FPS_ANNOUNCE
+{
+	string message = 1;
+}
+
+message S_FPS_SPAWN_ITEM
+{
+	Vector3 position = 1;
+}
+
+message S_FPS_SPAWN_DESTINATION
+{
+	Vector3 position = 1;
+}
+
+message S_FPS_DESTROY_DESTINATION
+{
+}
+
+message S_FPS_ITEM_OCCUPY_PROGRESS_STATE
+{
+	int32 occupyProgressState = 1;
+}
+
+message S_FPS_ITEM_OCCUPIED
+{
+	string occupier = 1;
+}
+
+message S_FPS_SCORED
+{
+	string scorer = 1;
+}

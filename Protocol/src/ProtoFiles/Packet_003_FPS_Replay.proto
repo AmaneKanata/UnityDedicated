@@ -1,0 +1,84 @@
+syntax = "proto3";
+package Protocol;
+
+import "Packet_001_GameObject.proto";
+import "Packet_002_FPS.proto";
+
+message Replay_Instantiate
+{
+	int32 playerId = 1;
+	Vector3 position = 2;
+	Quaternion rotation = 3;
+}
+
+message Replay_Position
+{
+	int32 playerId = 1;
+	Vector3 position = 2;
+	Vector3 velocity = 3;
+}
+
+message Replay_Rotation
+{
+	int32 playerId = 1;
+	Quaternion rotation = 2;
+}
+
+message Replay_Shoot
+{
+	Vector3 position = 2;
+	Vector3 direction = 3;
+}
+
+message Replay_Attacked
+{
+	int32 playerid = 1;
+	int32 damage = 2;
+	int32 hp = 3;
+}
+
+message Replay_Death
+{
+	int32 playerid = 1;
+}
+
+message Replay_ItemSpawn
+{
+	Vector3 position = 1;
+}
+
+message Replay_ItemDestroy
+{
+}
+
+message Replay_DestinationSpawn
+{
+	Vector3 position = 1;
+}
+
+message Replay_DestinationDestroy
+{
+}
+
+message ReplayData
+{
+	repeated Replay_Instantiate instantiate = 1;
+	repeated Replay_Position position = 2;
+	repeated Replay_Rotation rotation = 3;
+	repeated Replay_Shoot shoot = 4;
+	repeated Replay_Attacked attacked = 5;
+	repeated Replay_Death death = 6;
+	repeated Replay_ItemSpawn itemSpawn = 7;
+	repeated Replay_ItemDestroy itemDestroy = 8;
+	repeated Replay_DestinationSpawn destinationSpawn = 9;
+	repeated Replay_DestinationDestroy destinationDestroy = 10;
+}
+
+message S_FPS_REPLAY
+{
+	repeated ReplayData replayData = 1;
+}
+
+message C_FPS_REPLAY
+{
+}
