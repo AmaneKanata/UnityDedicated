@@ -57,23 +57,19 @@ namespace Framework.Network
         {
             T pkt = new();
             pkt.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
-
+            
             if (id == (ushort)MsgId.PKT_S_PING)
             {
                 Protocol.S_PING ping = pkt as Protocol.S_PING;
                 connection.Handle_S_PING(ping);
             }
-            if (id == (ushort)MsgId.PKT_C_PING)
-            {
-                Protocol.C_PING ping = pkt as Protocol.C_PING;
-                connection.Handle_C_PING(ping);
-            }
+
             if (id == (ushort)MsgId.PKT_S_SERVERTIME)
             {
                 Protocol.S_SERVERTIME serverTime = pkt as Protocol.S_SERVERTIME;
                 connection.Handle_S_SERVERTIME(serverTime);
             }
-
+            
             connection.PacketQueue.Push(id, pkt);
         }
         

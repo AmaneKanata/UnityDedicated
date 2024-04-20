@@ -9,7 +9,7 @@ namespace Framework.Network
     public enum MsgId : ushort
     {
         {%- for pkt in parser.total_pkt %}
-        PKT_{{pkt.name}} = {{ pkt.id}},
+        PKT_{{pkt.name}} = {{pkt.id}},
         {%- endfor %}
     }
 
@@ -43,23 +43,25 @@ namespace Framework.Network
         {
             T pkt = new();
             pkt.MergeFrom(buffer.Array, buffer.Offset + 4, buffer.Count - 4);
-
-            if (id == (ushort)MsgId.PKT_S_PING)
-            {
-                Protocol.S_PING ping = pkt as Protocol.S_PING;
-                connection.Handle_S_PING(ping);
-            }
+            {% if parser.send_prefix == "S_" %}
             if (id == (ushort)MsgId.PKT_C_PING)
             {
                 Protocol.C_PING ping = pkt as Protocol.C_PING;
                 connection.Handle_C_PING(ping);
             }
+            {% elif parser.send_prefix == "C_" %}
+            if (id == (ushort)MsgId.PKT_S_PING)
+            {
+                Protocol.S_PING ping = pkt as Protocol.S_PING;
+                connection.Handle_S_PING(ping);
+            }
+
             if (id == (ushort)MsgId.PKT_S_SERVERTIME)
             {
                 Protocol.S_SERVERTIME serverTime = pkt as Protocol.S_SERVERTIME;
                 connection.Handle_S_SERVERTIME(serverTime);
             }
-
+            {% endif %}
             connection.PacketQueue.Push(id, pkt);
         }
         {% for pkt in parser.send_pkt %}
