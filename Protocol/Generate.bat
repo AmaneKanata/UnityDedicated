@@ -14,6 +14,14 @@ set GENERATOR=%ROOT_DIR%src\Generator.exe
 if not exist %OUTPUT_PATH_CLIENT% mkdir %OUTPUT_PATH_CLIENT%
 if not exist %OUTPUT_PATH_SERVER% mkdir %OUTPUT_PATH_SERVER%
 
+:: Delete all files in OUTPUT_PATH_CLIENT
+echo Deleting all files in %OUTPUT_PATH_CLIENT%...
+del /Q /F %OUTPUT_PATH_CLIENT%\*
+
+:: Delete all files in OUTPUT_PATH_SERVER
+echo Deleting all files in %OUTPUT_PATH_SERVER%...
+del /Q /F %OUTPUT_PATH_SERVER%\*
+
 :: Compile .proto files to C# source code
 echo Compiling .proto files to C#...
 for %%f in (%PROTO_PATH%\*.proto) do (
