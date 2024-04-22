@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using MEC;
+using Protocol;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -46,18 +47,17 @@ namespace Framework.Network
             state = ConnectionState.Closed;
 
             packetHandler = new PacketHandler();
-            packetHandler.AddHandler(Handle_C_ENTER);
-
             PacketQueue = new();
-
             packetUpdate = Timing.RunCoroutine(PacketUpdate());
+
+            packetHandler.AddHandler(Handle_C_PING);
         }
 
         ~Connection()
         {
             UnityEngine.Debug.Log("Connection Destructor");
 
-            packetHandler.RemoveHandler(Handle_C_ENTER);
+            packetHandler.RemoveHandler(Handle_C_PING);
 
             Timing.KillCoroutines(packetUpdate);
         }
@@ -96,14 +96,13 @@ namespace Framework.Network
                 Session.Send(pkt);
         }
 
-        private void Handle_C_ENTER( Protocol.C_ENTER pkt )
-        {
-            Debug.Log($"Handle_C_ENTER: {pkt.ClientId}");
-        }
-
         public void Handle_C_PING( Protocol.C_PING pkt )
         {
-            Debug.Log($"Handle_C_PING");
+            S_PING res = new()
+            {
+                Tick = pkt.Tick
+            };
+            session.Send(PacketManager.MakeSendBuffer(res));
         }
 
         public void Close()

@@ -11,11 +11,13 @@ public class NetworkManager : SingletonManager<NetworkManager>
     private int port = 7777;
     private Acceptor acceptor;
 
-    public List<Connection> Connections { get; private set; }
+    private List<Client> tempClients;
+    public Dictionary<string, Client> Clients { get; private set; }
 
     public void Awake()
     {
-        Connections = new List<Connection>();
+        tempClients = new List<Client>();
+        Clients = new Dictionary<string, Client>();
     }
 
     public void StartAccept()
@@ -40,13 +42,23 @@ public class NetworkManager : SingletonManager<NetworkManager>
 
                 clientSocket.NoDelay = true;
 
-                Connection connection = new Connection();
-                connection.SetSession(clientSocket);
+                Client client = new Client();
+                client.SetSession(clientSocket);
 
-                Connections.Add(connection);
+                tempClients.Add(client);
             }
 
             yield return Timing.WaitForOneFrame;
         }
+    }
+
+    public void AddClient( Client client )
+    {
+        tempClients.Remove(client);
+
+        if (Clients.ContainsKey(client.Id))
+            Clients.Remove(client.Id);
+
+        Clients.Add(client.Id, client);
     }
 }
