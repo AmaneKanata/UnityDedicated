@@ -1,31 +1,25 @@
-﻿using MEC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using UnityEngine;
 
 namespace Framework.Network
 {
-    public class Acceptor : MonoBehaviour
+    public class Acceptor
     {
         private Socket listenSocket;
         private Queue<Socket> waitingSockets;
-        object lockObj = new object();
+        private object lockObj = new object();
 
-        public void Start()
+        public Acceptor( IPEndPoint endPoint )
         {
             waitingSockets = new Queue<Socket>();
-
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.0.8"), 7777);
 
             listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             listenSocket.Bind(endPoint);
             listenSocket.Listen(10);
 
             StartAccept();
-
-            Timing.RunCoroutine(ProcessSocket());
         }
 
         public void StartAccept()
@@ -61,32 +55,17 @@ namespace Framework.Network
             }
         }
 
-        public IEnumerator<float> ProcessSocket()
+        public Queue<Socket> GetWaitingSockets()
         {
-            while (true)
+            Queue<Socket> res;
+
+            lock (lockObj)
             {
-                int currentCount;
-                lock (lockObj)
-                {
-                    currentCount = waitingSockets.Count;
-                }
-
-                for (int i = 0; i < currentCount; i++)
-                {
-                    Socket clientSocket;
-                    lock (lockObj)
-                    {
-                        clientSocket = waitingSockets.Dequeue();
-                    }
-
-                    clientSocket.NoDelay = true;
-
-                    Connection connection = new();
-                    connection.SetSession(clientSocket);
-                }
-
-                yield return Timing.WaitForOneFrame;
+                res = waitingSockets;
+                waitingSockets = new Queue<Socket>();
             }
+
+            return res;
         }
 
         public void Close()
