@@ -1,0 +1,19 @@
+syntax = "proto3";
+package Protocol;
+
+message C_READY
+{
+	bool isReady = 1;
+}
+
+message S_LOAD_SCENE
+{
+}
+
+message C_LOAD_SCENE_COMPLETE
+{
+}
+
+message S_START_GAME
+{
+}

@@ -21,6 +21,10 @@ namespace Framework.Network
         PKT_S_SERVERTIME = 10,
         PKT_C_TEST = 11,
         PKT_S_TEST = 12,
+        PKT_C_READY = 100,
+        PKT_S_LOAD_SCENE = 101,
+        PKT_C_LOAD_SCENE_COMPLETE = 102,
+        PKT_S_START_GAME = 103,
     }
 
     public static class PacketManager
@@ -36,6 +40,8 @@ namespace Framework.Network
             onRecv.Add((ushort)MsgId.PKT_S_PING, MakePacket<S_PING>);
             onRecv.Add((ushort)MsgId.PKT_S_SERVERTIME, MakePacket<S_SERVERTIME>);
             onRecv.Add((ushort)MsgId.PKT_S_TEST, MakePacket<S_TEST>);
+            onRecv.Add((ushort)MsgId.PKT_S_LOAD_SCENE, MakePacket<S_LOAD_SCENE>);
+            onRecv.Add((ushort)MsgId.PKT_S_START_GAME, MakePacket<S_START_GAME>);
         }
 
         public static void OnRecv( ArraySegment<byte> buffer, Connection connection )
@@ -79,6 +85,8 @@ namespace Framework.Network
         public static ArraySegment<byte> MakeSendBuffer( Protocol.C_PING pkt ) { return MakeSendBuffer(pkt, 7); }
         public static ArraySegment<byte> MakeSendBuffer( Protocol.C_SERVERTIME pkt ) { return MakeSendBuffer(pkt, 9); }
         public static ArraySegment<byte> MakeSendBuffer( Protocol.C_TEST pkt ) { return MakeSendBuffer(pkt, 11); }
+        public static ArraySegment<byte> MakeSendBuffer( Protocol.C_READY pkt ) { return MakeSendBuffer(pkt, 100); }
+        public static ArraySegment<byte> MakeSendBuffer( Protocol.C_LOAD_SCENE_COMPLETE pkt ) { return MakeSendBuffer(pkt, 102); }
 
         private static ArraySegment<byte> MakeSendBuffer( IMessage pkt, ushort pktId )
         {

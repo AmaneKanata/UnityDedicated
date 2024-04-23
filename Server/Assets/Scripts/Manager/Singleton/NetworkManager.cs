@@ -1,5 +1,6 @@
 using Framework.Network;
 using MEC;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 public class NetworkManager : SingletonManager<NetworkManager>
 {
-    private string ip = "192.168.0.8";
+    private string ip = "127.0.0.1";
     private int port = 7777;
     private Acceptor acceptor;
 
@@ -60,5 +61,18 @@ public class NetworkManager : SingletonManager<NetworkManager>
             Clients.Remove(client.Id);
 
         Clients.Add(client.Id, client);
+
+        Protocol.S_ENTER res = new()
+        { 
+            Result = "SUCCESS"
+        };
+
+        client.Send(PacketManager.MakeSendBuffer(res));
+    }
+
+    public void BroadCast( ArraySegment<byte> pkt )
+    {
+        foreach (var client in Clients.Values)
+            client.Send(pkt);
     }
 }

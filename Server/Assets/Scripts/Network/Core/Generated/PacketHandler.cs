@@ -13,6 +13,8 @@ namespace Framework.Network
         private Action<Protocol.C_PING> C_PING_Handler;
         private Action<Protocol.C_SERVERTIME> C_SERVERTIME_Handler;
         private Action<Protocol.C_TEST> C_TEST_Handler;
+        private Action<Protocol.C_READY> C_READY_Handler;
+        private Action<Protocol.C_LOAD_SCENE_COMPLETE> C_LOAD_SCENE_COMPLETE_Handler;
 
         public PacketHandler()
         {
@@ -22,6 +24,8 @@ namespace Framework.Network
             Handlers.Add(7, _Handle_C_PING);
             Handlers.Add(9, _Handle_C_SERVERTIME);
             Handlers.Add(11, _Handle_C_TEST);
+            Handlers.Add(100, _Handle_C_READY);
+            Handlers.Add(102, _Handle_C_LOAD_SCENE_COMPLETE);
         }
         public void AddHandler( Action<Protocol.C_ENTER> handler )
         {
@@ -94,6 +98,30 @@ namespace Framework.Network
         private void _Handle_C_TEST( IMessage message )
         {
             C_TEST_Handler?.Invoke((Protocol.C_TEST)message);
+        }
+        public void AddHandler( Action<Protocol.C_READY> handler )
+        {
+            C_READY_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.C_READY> handler )
+        {
+            C_READY_Handler -= handler;
+        }
+        private void _Handle_C_READY( IMessage message )
+        {
+            C_READY_Handler?.Invoke((Protocol.C_READY)message);
+        }
+        public void AddHandler( Action<Protocol.C_LOAD_SCENE_COMPLETE> handler )
+        {
+            C_LOAD_SCENE_COMPLETE_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.C_LOAD_SCENE_COMPLETE> handler )
+        {
+            C_LOAD_SCENE_COMPLETE_Handler -= handler;
+        }
+        private void _Handle_C_LOAD_SCENE_COMPLETE( IMessage message )
+        {
+            C_LOAD_SCENE_COMPLETE_Handler?.Invoke((Protocol.C_LOAD_SCENE_COMPLETE)message);
         }
     }
 }
