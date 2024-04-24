@@ -16,6 +16,7 @@ namespace Framework.Network
         private Action<Protocol.S_TEST> S_TEST_Handler;
         private Action<Protocol.S_LOAD_SCENE> S_LOAD_SCENE_Handler;
         private Action<Protocol.S_START_GAME> S_START_GAME_Handler;
+        private Action<Protocol.S_INSTANTIATE> S_INSTANTIATE_Handler;
 
         public PacketHandler()
         {
@@ -28,6 +29,7 @@ namespace Framework.Network
             Handlers.Add(12, _Handle_S_TEST);
             Handlers.Add(101, _Handle_S_LOAD_SCENE);
             Handlers.Add(103, _Handle_S_START_GAME);
+            Handlers.Add(104, _Handle_S_INSTANTIATE);
         }
         public void AddHandler( Action<Protocol.S_ENTER> handler )
         {
@@ -136,6 +138,18 @@ namespace Framework.Network
         private void _Handle_S_START_GAME( IMessage message )
         {
             S_START_GAME_Handler?.Invoke((Protocol.S_START_GAME)message);
+        }
+        public void AddHandler( Action<Protocol.S_INSTANTIATE> handler )
+        {
+            S_INSTANTIATE_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.S_INSTANTIATE> handler )
+        {
+            S_INSTANTIATE_Handler -= handler;
+        }
+        private void _Handle_S_INSTANTIATE( IMessage message )
+        {
+            S_INSTANTIATE_Handler?.Invoke((Protocol.S_INSTANTIATE)message);
         }
     }
 }

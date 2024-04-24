@@ -1,6 +1,13 @@
 syntax = "proto3";
 package Protocol;
 
+message Vector3
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
 message C_READY
 {
 	bool isReady = 1;
@@ -16,4 +23,17 @@ message C_LOAD_SCENE_COMPLETE
 
 message S_START_GAME
 {
+}
+
+message S_INSTANTIATE
+{
+	int32 playerId = 1;
+	Vector3 position = 2;
+	float rotation = 3;
+}
+
+message C_PLAYER_INPUT
+{
+	float hori = 1;
+	bool jump = 2;
 }

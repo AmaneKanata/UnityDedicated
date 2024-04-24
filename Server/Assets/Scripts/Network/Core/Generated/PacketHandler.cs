@@ -15,6 +15,7 @@ namespace Framework.Network
         private Action<Protocol.C_TEST> C_TEST_Handler;
         private Action<Protocol.C_READY> C_READY_Handler;
         private Action<Protocol.C_LOAD_SCENE_COMPLETE> C_LOAD_SCENE_COMPLETE_Handler;
+        private Action<Protocol.C_PLAYER_INPUT> C_PLAYER_INPUT_Handler;
 
         public PacketHandler()
         {
@@ -26,6 +27,7 @@ namespace Framework.Network
             Handlers.Add(11, _Handle_C_TEST);
             Handlers.Add(100, _Handle_C_READY);
             Handlers.Add(102, _Handle_C_LOAD_SCENE_COMPLETE);
+            Handlers.Add(105, _Handle_C_PLAYER_INPUT);
         }
         public void AddHandler( Action<Protocol.C_ENTER> handler )
         {
@@ -122,6 +124,18 @@ namespace Framework.Network
         private void _Handle_C_LOAD_SCENE_COMPLETE( IMessage message )
         {
             C_LOAD_SCENE_COMPLETE_Handler?.Invoke((Protocol.C_LOAD_SCENE_COMPLETE)message);
+        }
+        public void AddHandler( Action<Protocol.C_PLAYER_INPUT> handler )
+        {
+            C_PLAYER_INPUT_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.C_PLAYER_INPUT> handler )
+        {
+            C_PLAYER_INPUT_Handler -= handler;
+        }
+        private void _Handle_C_PLAYER_INPUT( IMessage message )
+        {
+            C_PLAYER_INPUT_Handler?.Invoke((Protocol.C_PLAYER_INPUT)message);
         }
     }
 }

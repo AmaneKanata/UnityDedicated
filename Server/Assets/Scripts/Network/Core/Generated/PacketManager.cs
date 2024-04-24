@@ -25,6 +25,8 @@ namespace Framework.Network
         PKT_S_LOAD_SCENE = 101,
         PKT_C_LOAD_SCENE_COMPLETE = 102,
         PKT_S_START_GAME = 103,
+        PKT_S_INSTANTIATE = 104,
+        PKT_C_PLAYER_INPUT = 105,
     }
 
     public static class PacketManager
@@ -41,6 +43,7 @@ namespace Framework.Network
             onRecv.Add((ushort)MsgId.PKT_C_TEST, MakePacket<C_TEST>);
             onRecv.Add((ushort)MsgId.PKT_C_READY, MakePacket<C_READY>);
             onRecv.Add((ushort)MsgId.PKT_C_LOAD_SCENE_COMPLETE, MakePacket<C_LOAD_SCENE_COMPLETE>);
+            onRecv.Add((ushort)MsgId.PKT_C_PLAYER_INPUT, MakePacket<C_PLAYER_INPUT>);
         }
 
         public static void OnRecv( ArraySegment<byte> buffer, Connection connection )
@@ -81,6 +84,7 @@ namespace Framework.Network
         public static ArraySegment<byte> MakeSendBuffer( Protocol.S_TEST pkt ) { return MakeSendBuffer(pkt, 12); }
         public static ArraySegment<byte> MakeSendBuffer( Protocol.S_LOAD_SCENE pkt ) { return MakeSendBuffer(pkt, 101); }
         public static ArraySegment<byte> MakeSendBuffer( Protocol.S_START_GAME pkt ) { return MakeSendBuffer(pkt, 103); }
+        public static ArraySegment<byte> MakeSendBuffer( Protocol.S_INSTANTIATE pkt ) { return MakeSendBuffer(pkt, 104); }
 
         private static ArraySegment<byte> MakeSendBuffer( IMessage pkt, ushort pktId )
         {

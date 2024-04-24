@@ -1,19 +1,26 @@
-using Framework.Network;
-using System.Collections;
+using Protocol;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SceneLogic_Main : MonoBehaviour
 {
+    Dictionary<int, GameObject> Players;
+
     void Start()
     {
-        Debug.Log("SceneLogic_Main Start");
+        Players = new Dictionary<int, GameObject>();
+        
+        NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_INSTANTIATE);
     }
 
     public void Connect()
     {
         NetworkManager.Instance.Connect("TestClient");
+    }
+
+    public void Handle_S_INSTANTIATE( S_INSTANTIATE pkt )
+    {
+        var player = Instantiate(Resources.Load("Prefabs/Player"), Converter.Convert(pkt.Position), Converter.Convert(pkt.Rotation)) as GameObject;
+        Players.Add(pkt.PlayerId, player);
     }
 }
