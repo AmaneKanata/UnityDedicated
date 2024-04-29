@@ -1,5 +1,6 @@
 using Framework.Network;
 using MEC;
+using Protocol;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -15,11 +16,20 @@ public class NetworkManager : SingletonManager<NetworkManager>
     private List<Client> tempClients;
     public Dictionary<string, Client> Clients { get; private set; }
 
+    public Action<Client> OnEnterSucceeded;
+
     public void Awake()
     {
         tempClients = new List<Client>();
         Clients = new Dictionary<string, Client>();
     }
+
+    public void Start()
+    {
+        GPHManager.Instance.GPH.AddHandler(Handle_C_ENTER);
+    }
+
+    #region Low
 
     public void StartAccept()
     {
@@ -74,5 +84,19 @@ public class NetworkManager : SingletonManager<NetworkManager>
     {
         foreach (var client in Clients.Values)
             client.Send(pkt);
+    }
+
+    #endregion
+
+    public void Handle_C_ENTER( C_ENTER pkt, Connection connection )
+    {
+        Debug.Log("Handle_C_ENTER");
+
+        Client client = connection as Client;
+        client.Id = pkt.ClientId;
+        
+        Clients.Add(client.Id, client);
+
+        OnEnterSucceeded?.Invoke(client);
     }
 }

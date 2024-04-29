@@ -1,27 +1,34 @@
 using Framework.Network;
 using Protocol;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SceneLogic_Lobby : MonoBehaviour
 {
+    private VerticalLayoutGroup clientLobbyStates;
+
     public void Start()
     {
+        clientLobbyStates = GameObject.Find("ClientLobbyStates").GetComponent<VerticalLayoutGroup>();
+
         NetworkManager.Instance.StartAccept();
 
-        GPHManager.Instance.GPH.AddHandler(Handle_C_ENTER);
+        NetworkManager.Instance.OnEnterSucceeded += OnEnterSucceeded;
+        
+        GPHManager.Instance.GPH.AddHandler(Handle_C_READY);
     }
 
-    public void Handle_C_ENTER(C_ENTER pkt, Connection connection)
+    public void OnEnterSucceeded( Connection connection )
     {
-        Debug.Log("Handle_C_ENTER");
+        var clientLobbyState = Instantiate(Resources.Load<GameObject>("Prefabs/UI/ClientLobbyState"));
+        var client = connection as Client;
+        clientLobbyState.GetComponentInChildren<TMP_Text>().text = client.Id;
+        clientLobbyState.transform.SetParent(clientLobbyStates.transform);
+    }
 
+    public void Handle_C_READY( Protocol.C_READY pkt, Connection connection )
+    {
         Client client = connection as Client;
-        if (client == null)
-        {
-            Debug.LogError("Handle_C_ENTER: connection is not a Client");
-            return;
-        }
-
-        Debug.Log(client.Id);
     }
 }
