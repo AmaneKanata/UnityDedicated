@@ -131,9 +131,15 @@ namespace Framework.Network
                     {
                         PacketMessage packet = packets[i];
 
-                        packetHandler.Handlers.TryGetValue(packet.Id, out Action<IMessage> handler);
+                        {
+                            packetHandler.Handlers.TryGetValue(packet.Id, out Action<IMessage> handler);
+                            handler?.Invoke(packet.Message);
+                        }
 
-                        handler?.Invoke(packet.Message);
+                        {
+                            GPHManager.Instance.GPH.Handlers.TryGetValue(packet.Id, out Action<IMessage, Connection> handler);
+                            handler?.Invoke(packet.Message, this);
+                        }
                     }
                 }
 

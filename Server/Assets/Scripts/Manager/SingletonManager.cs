@@ -4,6 +4,7 @@ public static class Managers
 {
     public static SceneManager Scene { get { return SceneManager.Instance; } }
     public static NetworkManager Network { get { return NetworkManager.Instance; } }
+    public static GPHManager GPH { get { return GPHManager.Instance; } }
 }
 
 public class SingletonManager<T> : MonoBehaviour where T : MonoBehaviour
