@@ -7,6 +7,8 @@ public class SceneLogic_Lobby : MonoBehaviour
     void Start()
     {
         NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_LOAD_SCENE);
+
+        UIManager.Instance.OpenPanel<LobbyPanel>();
     }
 
     public void Connect()
