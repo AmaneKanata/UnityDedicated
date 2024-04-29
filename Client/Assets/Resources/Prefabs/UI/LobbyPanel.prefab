@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 7700980396788609271}
   - component: {fileID: 7543332941017799543}
   m_Layer: 5
-  m_Name: ClientId_Text
+  m_Name: ID_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -646,8 +646,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SceneLogic_Lobby, Assembly-CSharp
+      - m_Target: {fileID: 1998469696917395406}
+        m_TargetAssemblyTypeName: LobbyPanel, Assembly-CSharp
         m_MethodName: Connect
         m_Mode: 1
         m_Arguments:
@@ -962,7 +962,7 @@ GameObject:
   - component: {fileID: 2570413705856311748}
   - component: {fileID: 5075822904746399255}
   m_Layer: 5
-  m_Name: ClientId_Input
+  m_Name: ID_Input
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1247,8 +1247,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SceneLogic_Lobby, Assembly-CSharp
+      - m_Target: {fileID: 1998469696917395406}
+        m_TargetAssemblyTypeName: LobbyPanel, Assembly-CSharp
         m_MethodName: Ready
         m_Mode: 1
         m_Arguments:

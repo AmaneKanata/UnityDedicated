@@ -479,10 +479,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 3082102311631985640, guid: debf9b20e48cf1042a94ec20a3b2a032, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1653892246}
     - target: {fileID: 3177408550535024138, guid: debf9b20e48cf1042a94ec20a3b2a032, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -566,18 +562,6 @@ PrefabInstance:
     - target: {fileID: 3177408550535024138, guid: debf9b20e48cf1042a94ec20a3b2a032, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3332428963722911746, guid: debf9b20e48cf1042a94ec20a3b2a032, type: 3}
-      propertyPath: m_Name
-      value: ID_Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 3860425119046006993, guid: debf9b20e48cf1042a94ec20a3b2a032, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1653892246}
-    - target: {fileID: 7103878941071252399, guid: debf9b20e48cf1042a94ec20a3b2a032, type: 3}
-      propertyPath: m_Name
-      value: ID_Input
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

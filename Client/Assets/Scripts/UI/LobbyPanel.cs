@@ -1,4 +1,5 @@
 using Framework.Network;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine.UI;
 
@@ -50,7 +51,7 @@ public class LobbyPanel : PanelBase
         SetReadyButtonState(NetworkManager.Instance.Client.State == ConnectionState.Connected);
     }
 
-    private void Connect()
+    public void Connect()
     {
         string clientId = ID_Input.text;
 
@@ -62,7 +63,7 @@ public class LobbyPanel : PanelBase
         NetworkManager.Instance.Connect(clientId);
     }
 
-    private void Ready()
+    public void Ready()
     {
         Protocol.C_READY ready = new Protocol.C_READY() { IsReady = true };
         NetworkManager.Instance.Client.Send(PacketManager.MakeSendBuffer(ready));

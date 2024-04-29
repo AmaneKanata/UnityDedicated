@@ -11,20 +11,6 @@ public class SceneLogic_Lobby : MonoBehaviour
         UIManager.Instance.OpenPanel<LobbyPanel>();
     }
 
-    public void Connect()
-    {
-        NetworkManager.Instance.Connect("TestClient");
-    }
-
-    public void Ready()
-    {
-        C_READY ready = new()
-        {
-            IsReady = true
-        };
-        NetworkManager.Instance.Client.Send(PacketManager.MakeSendBuffer(ready));
-    }
-
     public void Handle_S_LOAD_SCENE( S_LOAD_SCENE pkt )
     {
         SceneManager.Instance.Fade(true);
