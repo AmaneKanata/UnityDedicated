@@ -17,6 +17,9 @@ namespace Framework.Network
         private Action<Protocol.S_LOAD_SCENE, Connection> S_LOAD_SCENE_Handler;
         private Action<Protocol.S_START_GAME, Connection> S_START_GAME_Handler;
         private Action<Protocol.S_INSTANTIATE, Connection> S_INSTANTIATE_Handler;
+        private Action<Protocol.S_SPAWN_ITEM, Connection> S_SPAWN_ITEM_Handler;
+        private Action<Protocol.S_DESTROY_ITEM, Connection> S_DESTROY_ITEM_Handler;
+        private Action<Protocol.S_FINISH_GAME, Connection> S_FINISH_GAME_Handler;
 
         public GlobalPacketHandler()
         {
@@ -30,6 +33,9 @@ namespace Framework.Network
             Handlers.Add(101, _Handle_S_LOAD_SCENE);
             Handlers.Add(103, _Handle_S_START_GAME);
             Handlers.Add(104, _Handle_S_INSTANTIATE);
+            Handlers.Add(106, _Handle_S_SPAWN_ITEM);
+            Handlers.Add(107, _Handle_S_DESTROY_ITEM);
+            Handlers.Add(108, _Handle_S_FINISH_GAME);
         }
         public void AddHandler( Action<Protocol.S_ENTER, Connection> handler )
         {
@@ -150,6 +156,42 @@ namespace Framework.Network
         private void _Handle_S_INSTANTIATE( IMessage message, Connection connection )
         {
             S_INSTANTIATE_Handler?.Invoke((Protocol.S_INSTANTIATE)message, connection);
+        }
+        public void AddHandler( Action<Protocol.S_SPAWN_ITEM, Connection> handler )
+        {
+            S_SPAWN_ITEM_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.S_SPAWN_ITEM, Connection> handler )
+        {
+            S_SPAWN_ITEM_Handler -= handler;
+        }
+        private void _Handle_S_SPAWN_ITEM( IMessage message, Connection connection )
+        {
+            S_SPAWN_ITEM_Handler?.Invoke((Protocol.S_SPAWN_ITEM)message, connection);
+        }
+        public void AddHandler( Action<Protocol.S_DESTROY_ITEM, Connection> handler )
+        {
+            S_DESTROY_ITEM_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.S_DESTROY_ITEM, Connection> handler )
+        {
+            S_DESTROY_ITEM_Handler -= handler;
+        }
+        private void _Handle_S_DESTROY_ITEM( IMessage message, Connection connection )
+        {
+            S_DESTROY_ITEM_Handler?.Invoke((Protocol.S_DESTROY_ITEM)message, connection);
+        }
+        public void AddHandler( Action<Protocol.S_FINISH_GAME, Connection> handler )
+        {
+            S_FINISH_GAME_Handler += handler;
+        }
+        public void RemoveHandler( Action<Protocol.S_FINISH_GAME, Connection> handler )
+        {
+            S_FINISH_GAME_Handler -= handler;
+        }
+        private void _Handle_S_FINISH_GAME( IMessage message, Connection connection )
+        {
+            S_FINISH_GAME_Handler?.Invoke((Protocol.S_FINISH_GAME)message, connection);
         }
     }
 }

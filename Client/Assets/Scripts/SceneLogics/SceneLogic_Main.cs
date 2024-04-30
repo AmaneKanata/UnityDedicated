@@ -6,6 +6,7 @@ using UnityEngine;
 public class SceneLogic_Main : MonoBehaviour
 {
     Dictionary<int, GameObject> Players;
+    GameObject item = null;
 
     void Start()
     {
@@ -13,6 +14,9 @@ public class SceneLogic_Main : MonoBehaviour
 
         NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_START_GAME);
         NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_INSTANTIATE);
+        NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_SPAWN_ITEM);
+        NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_DESTROY_ITEM);
+        NetworkManager.Instance.Client.packetHandler.AddHandler(Handle_S_FINISH_GAME);
 
         SceneManager.Instance.Fade(false);
 
@@ -24,6 +28,9 @@ public class SceneLogic_Main : MonoBehaviour
     {
         NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_START_GAME);
         NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_INSTANTIATE);
+        NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_SPAWN_ITEM);
+        NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_DESTROY_ITEM);
+        NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_FINISH_GAME);
     }
 
     public void Handle_S_START_GAME( S_START_GAME pkt )
@@ -42,5 +49,21 @@ public class SceneLogic_Main : MonoBehaviour
         {
             Debug.Log(e);
         }
+    }
+
+    public void Handle_S_SPAWN_ITEM( S_SPAWN_ITEM pkt )
+    {
+        item = Instantiate(Resources.Load("Prefabs/Item"), Converter.Convert(pkt.Position), Quaternion.identity) as GameObject;
+    }
+
+    public void Handle_S_DESTROY_ITEM( S_DESTROY_ITEM pkt )
+    {
+        Destroy(item);
+    }
+
+    public void Handle_S_FINISH_GAME( S_FINISH_GAME pkt )
+    {
+        SceneManager.Instance.Fade(true);
+        SceneManager.Instance.LoadScene(SceneName.Lobby);
     }
 }

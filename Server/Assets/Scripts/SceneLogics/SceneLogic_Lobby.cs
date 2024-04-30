@@ -13,6 +13,8 @@ public class SceneLogic_Lobby : MonoBehaviour
         NetworkManager.Instance.StartAccept();
 
         GPHManager.Instance.GPH.AddHandler(Handle_C_Ready);
+
+        SceneManager.Instance.Fade(false);
     }
 
     private void OnDestroy()

@@ -27,6 +27,9 @@ namespace Framework.Network
         PKT_S_START_GAME = 103,
         PKT_S_INSTANTIATE = 104,
         PKT_C_PLAYER_INPUT = 105,
+        PKT_S_SPAWN_ITEM = 106,
+        PKT_S_DESTROY_ITEM = 107,
+        PKT_S_FINISH_GAME = 108,
     }
 
     public static class PacketManager
@@ -45,6 +48,9 @@ namespace Framework.Network
             onRecv.Add((ushort)MsgId.PKT_S_LOAD_SCENE, MakePacket<S_LOAD_SCENE>);
             onRecv.Add((ushort)MsgId.PKT_S_START_GAME, MakePacket<S_START_GAME>);
             onRecv.Add((ushort)MsgId.PKT_S_INSTANTIATE, MakePacket<S_INSTANTIATE>);
+            onRecv.Add((ushort)MsgId.PKT_S_SPAWN_ITEM, MakePacket<S_SPAWN_ITEM>);
+            onRecv.Add((ushort)MsgId.PKT_S_DESTROY_ITEM, MakePacket<S_DESTROY_ITEM>);
+            onRecv.Add((ushort)MsgId.PKT_S_FINISH_GAME, MakePacket<S_FINISH_GAME>);
         }
 
         public static void OnRecv( ArraySegment<byte> buffer, Connection connection )

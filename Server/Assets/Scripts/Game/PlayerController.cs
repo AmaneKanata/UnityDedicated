@@ -1,6 +1,6 @@
 using Framework.Network;
 using Protocol;
-using System.Buffers;
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 
     private Client Owner;
 
+    public Action<string> OnItemOccupy;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -19,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(Owner != null)
+        if (Owner != null)
             Owner.packetHandler.RemoveHandler(Handle_C_PLAYER_INPUT);
     }
 
@@ -29,7 +31,7 @@ public class PlayerController : MonoBehaviour
         Owner.packetHandler.AddHandler(Handle_C_PLAYER_INPUT);
     }
 
-    public void Handle_C_PLAYER_INPUT(C_PLAYER_INPUT pkt)
+    public void Handle_C_PLAYER_INPUT( C_PLAYER_INPUT pkt )
     {
         rb.velocity = new Vector2(pkt.Hori * speed, rb.velocity.y);
 
@@ -45,6 +47,14 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+    }
+
+    private void OnTriggerEnter2D( Collider2D collision )
+    {
+        if (collision.gameObject.CompareTag("Item"))
+        {
+            OnItemOccupy?.Invoke(Owner.Id);
         }
     }
 }

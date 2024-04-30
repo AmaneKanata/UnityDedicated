@@ -36,8 +36,14 @@ public class NetworkManager : SingletonManager<NetworkManager>
 
     #region Low
 
+    bool isRunning = false;
     public void StartAccept()
     {
+        if (isRunning)
+            return;
+        else
+            isRunning = true;
+
         IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
         acceptor = new Acceptor(endPoint);
         acceptor.StartAccept();

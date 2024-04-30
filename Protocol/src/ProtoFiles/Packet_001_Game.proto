@@ -37,3 +37,16 @@ message C_PLAYER_INPUT
 	float hori = 1;
 	bool jump = 2;
 }
+
+message S_SPAWN_ITEM
+{
+	Vector3 position = 1;
+}
+
+message S_DESTROY_ITEM
+{
+}
+
+message S_FINISH_GAME
+{
+}

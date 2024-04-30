@@ -20,6 +20,11 @@ public class LobbyPanel : PanelBase
     {
         NetworkManager.Instance.OnEnterSucceeded += OnEnterSucceeded;
         GPHManager.Instance.GPH.AddHandler(Handle_C_READY);
+
+        foreach(string clientId in NetworkManager.Instance.Clients.Keys)
+        {
+            AddClient(clientId);
+        }
     }
 
     private void OnDestroy()
@@ -32,13 +37,7 @@ public class LobbyPanel : PanelBase
     {
         var client = connection as Client;
 
-        var clientLobbyState = Instantiate(Resources.Load<GameObject>("Prefabs/UI/ClientReadyState"));
-        clientLobbyState.transform.SetParent(list.transform);
-
-        clientLobbyState.GetComponent<ClientReadyState>().SetID(client.Id);
-        clientLobbyState.GetComponent<ClientReadyState>().SetReady(false);
-
-        clientReadyStates.Add(client.Id, clientLobbyState.GetComponent<ClientReadyState>());
+        AddClient(client.Id);
     }
 
     public void Handle_C_READY( Protocol.C_READY pkt, Connection connection )
@@ -46,5 +45,16 @@ public class LobbyPanel : PanelBase
         Client client = connection as Client;
 
         clientReadyStates[client.Id].SetReady(pkt.IsReady);
+    }
+
+    public void AddClient(string id)
+    {
+        var clientLobbyState = Instantiate(Resources.Load<GameObject>("Prefabs/UI/ClientReadyState"));
+        clientLobbyState.transform.SetParent(list.transform);
+
+        clientLobbyState.GetComponent<ClientReadyState>().SetID(id);
+        clientLobbyState.GetComponent<ClientReadyState>().SetReady(false);
+
+        clientReadyStates.Add(id, clientLobbyState.GetComponent<ClientReadyState>());
     }
 }

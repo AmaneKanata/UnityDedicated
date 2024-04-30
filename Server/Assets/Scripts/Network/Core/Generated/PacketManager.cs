@@ -27,6 +27,9 @@ namespace Framework.Network
         PKT_S_START_GAME = 103,
         PKT_S_INSTANTIATE = 104,
         PKT_C_PLAYER_INPUT = 105,
+        PKT_S_SPAWN_ITEM = 106,
+        PKT_S_DESTROY_ITEM = 107,
+        PKT_S_FINISH_GAME = 108,
     }
 
     public static class PacketManager
@@ -85,6 +88,9 @@ namespace Framework.Network
         public static ArraySegment<byte> MakeSendBuffer( Protocol.S_LOAD_SCENE pkt ) { return MakeSendBuffer(pkt, 101); }
         public static ArraySegment<byte> MakeSendBuffer( Protocol.S_START_GAME pkt ) { return MakeSendBuffer(pkt, 103); }
         public static ArraySegment<byte> MakeSendBuffer( Protocol.S_INSTANTIATE pkt ) { return MakeSendBuffer(pkt, 104); }
+        public static ArraySegment<byte> MakeSendBuffer( Protocol.S_SPAWN_ITEM pkt ) { return MakeSendBuffer(pkt, 106); }
+        public static ArraySegment<byte> MakeSendBuffer( Protocol.S_DESTROY_ITEM pkt ) { return MakeSendBuffer(pkt, 107); }
+        public static ArraySegment<byte> MakeSendBuffer( Protocol.S_FINISH_GAME pkt ) { return MakeSendBuffer(pkt, 108); }
 
         private static ArraySegment<byte> MakeSendBuffer( IMessage pkt, ushort pktId )
         {
