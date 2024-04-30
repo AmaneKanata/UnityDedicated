@@ -17,6 +17,12 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
+    private void OnDestroy()
+    {
+        if(Owner != null)
+            Owner.packetHandler.RemoveHandler(Handle_C_PLAYER_INPUT);
+    }
+
     public void SetOwner( Client owner )
     {
         Owner = owner;

@@ -7,7 +7,7 @@ public class SceneLogic_Main : MonoBehaviour
 {
     private int LoadCnt = 0;
 
-    public void Start()
+    private void Start()
     {
         S_LOAD_SCENE pkt = new S_LOAD_SCENE();
         NetworkManager.Instance.BroadCast(PacketManager.MakeSendBuffer(pkt));
@@ -17,6 +17,10 @@ public class SceneLogic_Main : MonoBehaviour
         SceneManager.Instance.Fade(false);
     }
 
+    public void OnDestroy()
+    {
+        GPHManager.Instance.GPH.RemoveHandler(Handle_C_LOAD_SCENE_COMPLETE);
+    }
     public void Handle_C_LOAD_SCENE_COMPLETE( C_LOAD_SCENE_COMPLETE pkt, Connection connection )
     {
         LoadCnt++;
@@ -25,7 +29,7 @@ public class SceneLogic_Main : MonoBehaviour
             StartGame();
     }
 
-    public void StartGame()
+    private void StartGame()
     {
         {
             S_START_GAME pkt = new S_START_GAME();

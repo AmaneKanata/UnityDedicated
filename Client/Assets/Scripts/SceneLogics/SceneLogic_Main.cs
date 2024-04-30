@@ -20,6 +20,12 @@ public class SceneLogic_Main : MonoBehaviour
         NetworkManager.Instance.Client.Send(PacketManager.MakeSendBuffer(res));
     }
 
+    private void OnDestroy()
+    {
+        NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_START_GAME);
+        NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_INSTANTIATE);
+    }
+
     public void Handle_S_START_GAME( S_START_GAME pkt )
     {
         Debug.Log("Handle_S_START_GAME");

@@ -12,6 +12,10 @@ namespace Framework.Network
             packetHandler.AddHandler(Handle_S_ENTER);
         }
 
+        ~Client()
+        {
+            packetHandler.RemoveHandler(Handle_S_ENTER);
+        }
         public void Handle_S_ENTER( S_ENTER pkt )
         {
             if (pkt.Result != "SUCCESS")

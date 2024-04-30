@@ -8,11 +8,16 @@ public class SceneLogic_Lobby : MonoBehaviour
 {
     private int readyCnt = 0;
 
-    public void Start()
+    private void Start()
     {
         NetworkManager.Instance.StartAccept();
 
         GPHManager.Instance.GPH.AddHandler(Handle_C_Ready);
+    }
+
+    private void OnDestroy()
+    {
+        GPHManager.Instance.GPH.RemoveHandler(Handle_C_Ready);
     }
 
     public void Handle_C_Ready( C_READY pkt, Connection connection )

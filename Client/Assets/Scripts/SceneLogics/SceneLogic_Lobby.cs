@@ -11,6 +11,11 @@ public class SceneLogic_Lobby : MonoBehaviour
         UIManager.Instance.OpenPanel<LobbyPanel>();
     }
 
+    void OnDestroy()
+    {
+        NetworkManager.Instance.Client.packetHandler.RemoveHandler(Handle_S_LOAD_SCENE);
+    }
+
     public void Handle_S_LOAD_SCENE( S_LOAD_SCENE pkt )
     {
         SceneManager.Instance.Fade(true);

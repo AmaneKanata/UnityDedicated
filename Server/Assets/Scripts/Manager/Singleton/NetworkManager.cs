@@ -18,15 +18,20 @@ public class NetworkManager : SingletonManager<NetworkManager>
 
     public Action<Client> OnEnterSucceeded;
 
-    public void Awake()
+    private void Awake()
     {
         tempClients = new List<Client>();
         Clients = new Dictionary<string, Client>();
     }
 
-    public void Start()
+    private void Start()
     {
         GPHManager.Instance.GPH.AddHandler(Handle_C_ENTER);
+    }
+
+    private void OnDestroy()
+    {
+        GPHManager.Instance.GPH.RemoveHandler(Handle_C_ENTER);
     }
 
     #region Low
