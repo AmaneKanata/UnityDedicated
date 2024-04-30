@@ -3,41 +3,25 @@ using Protocol;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
-public enum GameState
+public class SceneLogic_Main : MonoBehaviour
 {
-    Idle,
-    Running,
-}
+    private int LoadCnt = 0;
 
-public class GameManager : SingletonManager<GameManager>
-{
-    public GameState GameState { get; private set; } = GameState.Idle;
-
-    private int readyNumber = 0;
-    private int loadSceneCompleteNumber = 0;
-
-    public void Ready( bool isReady )
+    public void Start()
     {
-        readyNumber += isReady ? 1 : -1;
-
-        if (readyNumber == NetworkManager.Instance.Clients.Count)
-            LoadScene();
-    }
-
-    public void LoadScene()
-    {
-        GameState = GameState.Running;
-        //Load Map
-
         S_LOAD_SCENE pkt = new S_LOAD_SCENE();
         NetworkManager.Instance.BroadCast(PacketManager.MakeSendBuffer(pkt));
+
+        GPHManager.Instance.GPH.AddHandler(Handle_C_LOAD_SCENE_COMPLETE);
+
+        SceneManager.Instance.Fade(false);
     }
 
-    public void LoadSceneComplete()
+    public void Handle_C_LOAD_SCENE_COMPLETE( C_LOAD_SCENE_COMPLETE pkt, Connection connection )
     {
-        loadSceneCompleteNumber++;
+        LoadCnt++;
 
-        if (loadSceneCompleteNumber == NetworkManager.Instance.Clients.Count)
+        if (LoadCnt == NetworkManager.Instance.Clients.Count)
             StartGame();
     }
 
@@ -59,7 +43,7 @@ public class GameManager : SingletonManager<GameManager>
             player.GetComponent<PlayerController>().SetOwner(client);
 
             S_INSTANTIATE pkt = new S_INSTANTIATE()
-            { 
+            {
                 PlayerId = cnt++,
                 Position = Converter.Convert(position),
                 Rotation = rotation,
