@@ -74,23 +74,6 @@ public class NetworkManager : SingletonManager<NetworkManager>
         }
     }
 
-    public void AddClient( Client client )
-    {
-        tempClients.Remove(client);
-
-        if (Clients.ContainsKey(client.Id))
-            Clients.Remove(client.Id);
-
-        Clients.Add(client.Id, client);
-
-        Protocol.S_ENTER res = new()
-        { 
-            Result = "SUCCESS"
-        };
-
-        client.Send(PacketManager.MakeSendBuffer(res));
-    }
-
     public void BroadCast( ArraySegment<byte> pkt )
     {
         foreach (var client in Clients.Values)
@@ -101,13 +84,18 @@ public class NetworkManager : SingletonManager<NetworkManager>
 
     public void Handle_C_ENTER( C_ENTER pkt, Connection connection )
     {
-        Debug.Log("Handle_C_ENTER");
-
         Client client = connection as Client;
         client.Id = pkt.ClientId;
-        
+
         Clients.Add(client.Id, client);
 
         OnEnterSucceeded?.Invoke(client);
+
+        Protocol.S_ENTER res = new()
+        {
+            Result = "SUCCESS"
+        };
+
+        client.Send(PacketManager.MakeSendBuffer(res));
     }
 }
