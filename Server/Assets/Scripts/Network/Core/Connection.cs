@@ -42,6 +42,9 @@ namespace Framework.Network
 
         CoroutineHandle packetUpdate;
 
+        public bool DelaySend { get; set; } = false;
+        public float DelaySendTime = 0.1f;
+
         public Connection()
         {
             state = ConnectionState.Closed;
@@ -93,7 +96,18 @@ namespace Framework.Network
         public void Send( ArraySegment<byte> pkt )
         {
             if (state == ConnectionState.Connected)
-                Session.Send(pkt);
+            {
+                if (DelaySend)
+                    Timing.RunCoroutine(SendCo(pkt));
+                else
+                    Session.Send(pkt);
+            }
+        }
+
+        public IEnumerator<float> SendCo( ArraySegment<byte> pkt )
+        {
+            yield return Timing.WaitForSeconds(DelaySendTime);
+            Session.Send(pkt);
         }
 
         public void Handle_C_PING( Protocol.C_PING pkt )
